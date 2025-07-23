@@ -1,6 +1,6 @@
 
 <template>
-  <div class="bg-slate-600 h-screen">
+  <div class="bg-slate-200 h-screen">
  
       <!-- slot -->
       <slot />
