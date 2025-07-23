@@ -2,6 +2,7 @@
 import { useRoute } from "vue-router";
 import { useVuelidate } from "@vuelidate/core";
 import { required, email } from "@vuelidate/validators";
+import { useSignUpStore } from "../../store/auth/signup-store";
   
   definePageMeta({
       layout: 'auth'
@@ -13,22 +14,19 @@ import { required, email } from "@vuelidate/validators";
     password: {required},
   }
   
-  const registerInput = ref({
-    email: "",
-    password: "",
-    name: "",
-  })
-
   const router = useRoute();
   const isLoading = ref(false)
+  const signUpStore = useSignUpStore()
+  const registerInput = signUpStore()
+
   const validate = useVuelidate(rules, registerInput);
   
 </script>
 
 <template>
   <div class="bg-white h-screen ">
-    <div class="flex justify-center items-center">
-      <div class="w-[300px] mt-20">
+    <div class="h-full w-full flex justify-center items-center">
+      <div class="w-[300px]">
         <div class="flex flex-col gap-5">
           <h1 class="text-2xl mb-3 text-center font-medium">Sign In</h1>
 

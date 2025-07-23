@@ -26,8 +26,8 @@ const v$ = useVuelidate(rules, loginInput);
 
 <template>
     <div class="bg-white h-screen ">
-      <div class="flex justify-center items-center">
-        <div class="w-[300px] mt-20">
+      <div class="h-full w-full flex justify-center items-center">
+        <div class="w-[300px]">
           <div class="flex flex-col gap-5">
             <h1 class="text-2xl mb-3 text-center font-medium">Sign In</h1>
 
