@@ -40,20 +40,18 @@ const v$ = useVuelidate(rules, loginInput);
             </FormError>
 
             <FormError :errors="v$.password.$errors">
-            <BaseInput
-              v-model="loginInput.password"
-              :type="'password'"
-              :placeholder="'Password'"
-            />
-          </FormError>
+              <BaseInput
+                v-model="loginInput.password"
+                :type="'password'"
+                :placeholder="'Password'"
+              />
+            </FormError>
 
-          <BaseButton
-          class="mt-5"
-          :isLoading="isLoading"
-          label="Sign In"/>
-          <p class="text-center">Dont have an account ? <NuxtLink to="/auth/signup" class="text-indigo-500 hover:text-brand-600 font-semibold"
-            >Sign Up</NuxtLink>
-          </p>
+            <BaseButton class="mt-5" :isLoading="isLoading" label="Sign In"/>
+            <p class="text-sm font-normal text-center text-gray-700 dark:text-gray-500 sm:text-start" >
+              Dont have an account ?
+              <NuxtLink to="/auth/signup" class="text-indigo-500 hover:text-brand-600 font-semibold">Sign Up</NuxtLink>
+            </p>
           </div>
         </div>
       </div>
