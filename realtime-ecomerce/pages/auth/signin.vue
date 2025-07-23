@@ -3,6 +3,8 @@ import { useRoute } from "vue-router";
 import { useVuelidate } from "@vuelidate/core";
 import { required, email } from "@vuelidate/validators";
 import { useCookie } from "nuxt/app";
+import { useSignUpStore } from "../../store/auth/signup-store";
+import { storeToRefs } from "pinia";
 
 
 definePageMeta({
@@ -18,20 +20,22 @@ const rules = {
   password: { required },
 };
 
-const isLoading = ref(false);
 const router = useRoute();
-const v$ = useVuelidate(rules, loginInput);
+const isLoading = ref(false);
+const validate = useVuelidate(rules, loginInput);
+
+async function submit() {}
   
 </script>
 
 <template>
     <div class="bg-white h-screen ">
-      <div class="flex justify-center items-center">
-        <div class="w-[300px] mt-20">
+      <div class="h-full w-full flex justify-center items-center">
+        <div class="w-[300px]">
           <div class="flex flex-col gap-5">
             <h1 class="text-2xl mb-3 text-center font-medium">Sign In</h1>
 
-            <FormError :errors="v$.email.$errors">
+            <FormError :errors="validate.email.$errors">
               <BaseInput
                 v-model="loginInput.email"
                 type="email"
@@ -39,7 +43,7 @@ const v$ = useVuelidate(rules, loginInput);
               />
             </FormError>
 
-            <FormError :errors="v$.password.$errors">
+            <FormError :errors="validate.password.$errors">
               <BaseInput
                 v-model="loginInput.password"
                 :type="'password'"
@@ -47,7 +51,7 @@ const v$ = useVuelidate(rules, loginInput);
               />
             </FormError>
 
-            <BaseButton class="mt-5" :isLoading="isLoading" label="Sign In"/>
+            <BaseButton @click="submitInput" class="mt-5" :isLoading="isLoading" label="Sign In"/>
             <p class="text-sm font-normal text-center text-gray-700 dark:text-gray-500 sm:text-start" >
               Dont have an account ?
               <NuxtLink to="/auth/signup" class="text-indigo-500 hover:text-brand-600 font-semibold">Sign Up</NuxtLink>
