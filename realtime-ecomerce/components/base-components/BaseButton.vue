@@ -1,6 +1,6 @@
 <template>
     <button
-  class=" flex justify-center bg-indigo-500 text-white font-bold py-2 px-4 rounded flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+  class=" flex justify-center bg-indigo-500 text-white font-bold py-2 px-4 rounded items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
   :disabled="isLoading"
     >
     <svg v-show="isLoading" class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
