@@ -35,7 +35,7 @@ import { storeToRefs } from "pinia";
             <BaseInput
               v-model="registerInput.name"
               type="text"
-              placeholder="Uer Name"
+              placeholder="User Name"
             />
           </FormError>
 
