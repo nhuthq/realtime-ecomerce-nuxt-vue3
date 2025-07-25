@@ -1,6 +1,6 @@
 
 import { PrismaClient } from '@prisma/client'
-import { signInSchema } from './modules/validate-user'
+import { signInSchema, signUpSchema } from './modules/validate-user'
 import { generateOTPCode } from './modules/generate-opt-code';
 import { createError, defineEventHandler, readBody } from 'h3';
 import { comparePassword, hashPassword } from './modules/brypt';
@@ -13,13 +13,14 @@ export default defineEventHandler(async (event) => {
     
     const body = await readBody(event)
     const { name, email, password } = body
-    const result = signInSchema.safeParse({ name, email, password })
-
+    const result = signUpSchema.safeParse({ name, email, password })
+    
     if (!result.success) {
+        const errorMessage = `Validation Failed: ${result.error.issues[0].message}`
         throw createError({
             statusCode: 400,
-            statusMessage: 'Validation Failed',
-            data: result.error.flatten(),
+            message: errorMessage,
+            data: result.error.flatten,
         })
     }
 
@@ -49,8 +50,8 @@ export default defineEventHandler(async (event) => {
 
     return { 
         statusCode: 200, 
-        statusMessage: 'User Created successfully', 
-        user, 
+        message: 'User created successfully!', 
+        user,
         redirect: true 
     };
 })

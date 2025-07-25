@@ -22,6 +22,8 @@ export async function sendVerificationEmail(receiverEmail: string, otpCode: stri
         text: `Hello! Use this code to verify your email address: ${otpCode}`,
     };
 
+    console.log('MAIL OPTIONS: ', mailOptions, transporter)
+
     // Send the email
     transporter.sendMail(mailOptions, function(error, info){
         if (error) console.log("Send verification mail error:", error);

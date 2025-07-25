@@ -12,11 +12,12 @@ export default defineEventHandler(async (event) => {
     const body = await readBody(event)
     const { email, password } = body
     const result = signInSchema.safeParse({ email, password })
-
+    
     if (!result.success) {
+        const errorMessage = `Validation Failed: ${result.error.issues[0].message}`
         throw createError({
             statusCode: 400,
-            statusMessage: 'Validation Failed',
+            statusMessage: errorMessage,
             data: result.error.flatten(),
         })
     }
@@ -26,7 +27,7 @@ export default defineEventHandler(async (event) => {
     })
 
     if (!user) {
-        throw createError({ statusCode: 401, statusMessage: 'Invalid credentials' })
+        throw createError({ statusCode: 401, message: 'Email is not registered, Please try again!' })
     }
 
     const isPasswordValid = await comparePassword(password, user.password)
@@ -52,8 +53,13 @@ export default defineEventHandler(async (event) => {
             },
             isLoggedIn: true
         }
-        return { message: 'User logged successfully', data };
+        return { 
+            statusCode: 200, 
+            message: 'User logged successfully!', 
+            data,
+            redirect: true 
+        };
     } else {
-        throw createError({ statusCode: 422, message: 'Email or Password invalid' })
+        throw createError({ statusCode: 401, message: 'Password is invalid, Please try again!' })
     }
 })

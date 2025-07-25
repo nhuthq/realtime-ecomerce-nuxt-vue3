@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client'
+import { USER_EMAIL_TYPE } from './modules/user-constant';
 import { createError, defineEventHandler, readBody } from 'h3';
-import { USER_EMAIL_TYPE, USER_ROLE } from './modules/user-constant';
 
 const prisma = new PrismaClient()
 
@@ -8,11 +8,17 @@ export default defineEventHandler(async (event) => {
     
     const { email, otpCode } = await readBody(event)
 
+    if (!email || !otpCode) {
+        throw createError({ statusCode: 400, message: 'Email and OTP code are required'})
+    }
+
     const userExist = await prisma.user.findUnique({
         where: {
             email: email
         }
     })
+
+    console.log('USER EXIST: ', userExist)
 
     if (userExist) {
         const existingOtpCode=userExist?.otpCode
@@ -28,7 +34,8 @@ export default defineEventHandler(async (event) => {
             
               return { 
                 statusCode: 200, 
-                statusMessage: 'Your email has been verified successfully', 
+                message: 'Your email has been verified successfully!', 
+                user: updatedUser,
                 redirect: true 
             };
         } else {
