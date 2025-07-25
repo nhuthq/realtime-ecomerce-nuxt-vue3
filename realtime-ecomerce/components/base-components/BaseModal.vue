@@ -1,13 +1,13 @@
 <script setup>
-const props = defineProps(["show"]);
+const props = defineProps(["isShow"]);
 
 </script>
 
 <template>
   <div 
-  v-show="show"
-  class="fixed z-[1000] inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center p-4 sm:p-6 transition-opacity duration-300 ease-out">
-    <div class="bg-white p-4 sm:p-6 rounded-lg shadow-lg w-full max-w-md sm:w-2/3 md:w-1/2 lg:w-1/3 transition-opacity duration-300 ease-out scale-95 opacity-0 animate-modalFadeIn">
+  v-show="isShow"
+  class="fixed inset-0 z-[1000] bg-black/50 flex items-center justify-center p-4 sm:p-6">
+    <div class="bg-white p-4 sm:p-6 rounded-lg shadow-lg w-full max-w-md sm:w-2/3 md:w-1/2 lg:w-1/3 ease-out scale-95 opacity-0 animate-modalFadeIn">
         <!-- Header -->
         <div class="flex justify-between items-center">
             <slot name="title"></slot>

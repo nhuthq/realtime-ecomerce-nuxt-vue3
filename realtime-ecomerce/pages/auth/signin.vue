@@ -27,8 +27,8 @@ const validate = useVuelidate(rules, loginInput);
 const userCookie = useCookie("user", userCookieSettings);
 
 watchEffect(() => {
-  submitEnable.value = loginInput.value.email.length > 0 && 
-  loginInput.value.password.length > 0
+  submitEnable.value = loginInput.value.email.trim().length > 0 && 
+  loginInput.value.password.trim().length > 0
 });
 
 async function submitSignIn() {
@@ -49,6 +49,7 @@ async function submitSignIn() {
       
       const userRole = response?.data?.user?.role;
       userCookie.value = response; 
+      console.log("LOGIN RESPONSE: ", JSON.stringify(response))
       
       switch (userRole) {
         case "CUSTOMER":
