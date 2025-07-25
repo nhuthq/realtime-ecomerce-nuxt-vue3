@@ -5,8 +5,8 @@ export const useSignUpStore = defineStore('signup-store', () => {
   const registerInput = ref({
     name:'',
     email: '',
-    password: '',
-    otpCode:''
+    otpCode:'',
+    password: ''
   });
   
     return { registerInput }

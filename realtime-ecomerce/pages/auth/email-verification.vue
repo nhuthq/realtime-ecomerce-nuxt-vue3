@@ -1,88 +1,85 @@
 <script lang="ts" setup>
-
-import { ref } from "vue";
-import { useRoute } from "vue-router";
 import VOtpInput from "vue3-otp-input";
-import { useSignUpStore } from "../../store/auth/signup-store";
+import { ref } from "vue";
 import { storeToRefs } from "pinia";
+import { useRoute } from "vue-router";
+import { useSignUpStore } from "../../stores/auth/signup-store";
+import { showError, successMsg } from "../../utils/toast-notification";
+import handleApiError from "../../utils/handle-parse-error";
 
 const otpInput = ref<InstanceType<typeof VOtpInput> | null>(null);
 
-  
+const router = useRoute();
 const bindModal = ref("");
 const isLoading = ref(false);
-const router = useRoute();
+const submitEnable = ref(false);
 const signUpStore = useSignUpStore();
 const { registerInput } = storeToRefs(signUpStore);
 
-const handleOnComplete = (value: string) => {
+function handleOnComplete (value: string) {
+  registerInput.value.otpCode = value;
   console.log("OTP completed: ", value);
 };
 
-const handleOnChange = (value: string) => {
+function handleOnChange (value: string) {
   console.log("OTP changed: ", value);
-};
-
-const clearInput = () => {
-  otpInput.value?.clearInput();
-};
-
-const fillInput = (value: string) => {
-  console.log(value);
-  otpInput.value?.fillInput(value);
+  submitEnable.value = value.length === 6;
 };
 
 async function verifyEmail() {
-  // try {
-  //   loading.value = true;
-  //   const res = await $fetch("/api/auth/email-verification", {
-  //     method: "POST",
-  //     body: JSON.stringify(registerInput.value),
-  //   });
 
-  //   loading.value = false;
-  //   successMsg(res?.message);
-  //   window.location.href='/auth/signin'
-  //   // router.push("/auth/signin");
+  isLoading.value = true;
+  try {
+    const response = await $fetch("/api/auth/email-verification", {
+      method: "POST",
+      body: JSON.stringify(registerInput.value),
+    });
 
-  //   // console.log(res);
-  // } catch (error) {
-  //   loading.value = false;
-  //   // console.log('Error:', error?.data);
-  //   console.log("error :", error?.message);
-  // }
+    if (response.statusCode === 200) {
+      isLoading.value = false;
+      successMsg(response.message);
+      setTimeout(() => {
+        window.location.href='/auth/signin'
+      }, 1000);
+    }
+  } catch (error) {
+    console.log("ERROR: ", error)
+    const { message } = handleApiError(error);
+    showError(message)
+    isLoading.value = false;
+  }
 }
-
 </script>
 
 <template>
   <div>
-    <div class="bg-white h-screen ">
+    <div class="bg-white h-screen">
       <div class="h-full w-full flex justify-center items-center">
         <div class="flex flex-col gap-5">
-            <h1 class="text-2xl mb-3 text-center font-medium">E-mail verification</h1>
-            <v-otp-input
-                ref="otpInput"
-                input-classes="otp-input"
-                :conditionalClass="['one', 'two', 'three', 'four']"
-                separator=""
-                inputType="letter-numeric"
-                :num-inputs="6"
-                v-model:value="bindModal"
-                :should-auto-focus="true"
-                :should-focus-order="true"
-                @on-change="handleOnChange"
-                @on-complete="handleOnComplete"
-                :placeholder="['*', '*', '*', '*']"
-            />
+          <h1 class="text-2xl mb-3 text-center font-medium">E-mail verification</h1>
+          <v-otp-input
+            ref="otpInput"
+            input-classes="otp-input"
+            :conditionalClass="['one', 'two', 'three', 'four']"
+            separator=""
+            inputType="letter-numeric"
+            :num-inputs="6"
+            v-model:value="bindModal"
+            :should-auto-focus="true"
+            :should-focus-order="true"
+            @on-change="handleOnChange"
+            @on-complete="handleOnComplete"
+            :placeholder="['*', '*', '*', '*']"
+          />
 
-            <BaseButton
-                class="w-[100%] mt-5"
-                @click="verifyEmail"
-                :isLoading="isLoading"
-                label="Verify your Email Adress"
-            ></BaseButton>
-          </div>
+          <BaseButton
+            class="w-[100%] mt-5"
+            @click="verifyEmail"
+            :isLoading="isLoading"
+            :disabled="!submitEnable"
+            label="Verify your Email Adress"
+          ></BaseButton>
+        </div>
       </div>
     </div>
   </div>
