@@ -1,6 +1,7 @@
 import { Ref } from "vue";
-import useCookie from 'react-use-cookie';
+import { useCookie } from "nuxt/app";
 import { userCookieSettings } from "./user-cookie-settings";
+
 
 export function useHeaders() {
 

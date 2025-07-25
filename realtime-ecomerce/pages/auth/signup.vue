@@ -27,9 +27,9 @@ const validate = useVuelidate(rules, registerInput);
 
 watchEffect(() => {
   submitEnable.value =
-    registerInput.value.name.length > 0 &&
-    registerInput.value.email.length > 0 &&
-    registerInput.value.password.length > 0;
+    registerInput.value.name.trim().length > 0 &&
+    registerInput.value.email.trim().length > 0 &&
+    registerInput.value.password.trim().length > 0;
 });
 
 async function submitSignUp() {
