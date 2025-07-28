@@ -1,36 +1,41 @@
 <script setup>
 import { ref } from "vue";
-import { useProductsStore } from "../../stores/product/product-store";
 import { storeToRefs } from "pinia";
-import { useCategoryStore } from "../../stores/category/category-store";
 import { promptUser } from "../../utils/sweet-alert";
-import handleApiError from "../../utils/handle-parse-error";
 import { useHeaders } from "../../utils/http-headers";
-import { successMsg } from "../../utils/toast-notification";
+import { errorMsg, successMsg } from "../../utils/toast-notification";
+import { useProductsStore } from "../../stores/product/product-store";
+import { useCategoryStore } from "../../stores/category/category-store";
+
+import handleApiError from "../../utils/handle-parse-error";
 
 definePageMeta({
   layout: "admin",
 });
 
 const headers = useHeaders();
-const isShowModal = ref(false);
 const productStore = useProductsStore();
 const categoriesStore = useCategoryStore();
-const {
-  edit,
-  productId,
-  productInput,
-  uploadProductImages,
-  isShowUploadImageModal,
-  isShowUploadedImageModal,
-} = storeToRefs(productStore);
+const { edit, productId, productInput, uploadProductImages } = storeToRefs(productStore);
+
+const isShowProductModal = ref(false);
+const isShowUploadImageModal = ref(false);
+const isShowUploadedImageModal = ref(false);
 
 // FETCH DATA
 await productStore.fetchProducts();
 await categoriesStore.fetchCategories();
 
 function toggleProductModal() {
-  isShowModal.value = !isShowModal.value;
+  isShowProductModal.value = !isShowProductModal.value;
+}
+
+function toggleUploadImageModal() {
+  isShowUploadImageModal.value = !isShowUploadImageModal.value;
+}
+
+function toggleUploadedImageModal() {
+  isShowUploadedImageModal.value = !isShowUploadedImageModal.value;
 }
 
 async function confirmDeleteProduct(product) {
@@ -62,7 +67,7 @@ async function deleteProduct(id) {
   } catch (error) {
     console.error("DELETE PRODUCT ERROR: ", error);
     const message = handleApiError(error);
-    showError(message);
+    errorMsg(message);
   }
 }
 
@@ -77,12 +82,13 @@ async function editProduct(product) {
 }
 
 function uploadImage(product) {
+  console.log("UPLOAD IMAGE: ", product);
   productId.value = product?.id;
-  isShowUploadImageModal.value = true;
+  toggleUploadImageModal();
 }
 
 function showUploadedImage(product) {
-  productId.value = product?.id;
+  uploadProductImages.value = product?.images;
   isShowUploadedImageModal.value = true;
 }
 </script>
@@ -94,13 +100,20 @@ function showUploadedImage(product) {
 
       <ClientOnly>
         <ProductModal
-          :isShow="isShowModal"
+          :isShow="isShowProductModal"
           :categories="categoriesStore.categoriesData"
           @refreshProducts="refreshProducts"
           @toggleProductModal="toggleProductModal"
         />
-        <UploadImage @refreshProducts="productStore.fetchProducts" />
-        <UploadedImageModal />
+        <UploadImageModal
+          :isShow="isShowUploadImageModal"
+          @toggleUploadImageModal="toggleUploadImageModal"
+          @refreshProducts="productStore.fetchProducts"
+        />
+        <UploadedImageModal
+        :isShow="isShowUploadedImageModal"
+        @toggleUploadedImageModal="toggleUploadedImageModal"
+         />
       </ClientOnly>
     </div>
 

@@ -13,7 +13,7 @@ const emit = defineEmits([
   "editProduct",
   "deleteProduct",
   "uploadImage",
-  "showUploadedImages",
+  "showUploadedImage",
 ]);
 // const productStore = useProductsStore();
 // const { search, productsData } = storeToRefs(productStore);
@@ -93,7 +93,7 @@ function prevPage() {
             <ImageIcon />
           </button>
           <button
-            @click="emit('showUploadedImages', product)"
+            @click="emit('showUploadedImage', product)"
             class="flex justify-center hover:bg-slate-200 text-gray-900 font-bold py-2 px-4 rounded item-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <EyeIcon />

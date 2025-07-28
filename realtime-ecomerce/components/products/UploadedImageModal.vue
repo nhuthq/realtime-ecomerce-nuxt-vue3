@@ -1,14 +1,16 @@
 <script setup>
-import { storeToRefs } from "pinia";
-import { useProductsStore } from "../../stores/product/product-store";
+import { storeToRefs } from 'pinia';
+import { useProductsStore } from '../../stores/product/product-store';
+
 
 const productStore = useProductsStore();
-const { uploadProductImages, isShowUploadedImageModal } =
-  storeToRefs(productStore);
+const { uploadProductImages } = storeToRefs(productStore);
+const props = defineProps(["isShow", "uploadProductImages"]);
+const emit = defineEmits(["toggleUploadedImageModal"]);
 </script>
 
 <template>
-  <BaseModal :isShow="isShowUploadedImageModal">
+  <BaseModal :isShow="isShow">
     <template #title>
       <div class="text-2xl font-semibold">Uploaded Images</div>
     </template>
@@ -28,7 +30,7 @@ const { uploadProductImages, isShowUploadedImageModal } =
     <template #footer>
       <BaseButton
         class="bg-slate-400"
-        @click="isShowUploadedImageModal = false"
+        @click="emit('toggleUploadedImageModal')"
         label="Close"
       />
     </template>

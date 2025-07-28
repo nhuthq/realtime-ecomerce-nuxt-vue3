@@ -4,6 +4,7 @@ import multer from "multer";
 
 import { PrismaClient } from "@prisma/client";
 import { withAuth } from "../../../../utils/with-auth";
+import { createError, defineEventHandler, readBody } from 'h3'
 
 const prisma = new PrismaClient();
 
@@ -51,15 +52,12 @@ async function uploadProductImage(event: any) {
         if (err) {
           reject(err);
         }
-
         const file = event.req.files?.["file"]?.[0];
         const productId = Number(event.req.body?.productId);
-
         if (!file || !productId) {
           reject(new Error("Missing file or productId"));
           return;
         }
-
         const imageUrl = `/uploads/${file.filename}`;
         resolve({ imageUrl, productId });
       });
@@ -68,13 +66,26 @@ async function uploadProductImage(event: any) {
 }
 
 export default withAuth(async (event) => {
-  const { imageUrl, productId } = await uploadProductImage(event);
+  try {
+    const { imageUrl, productId } = await uploadProductImage(event);
 
-  await prisma.image.create({
-    data: {
+    await prisma.image.create({
+      data: {
+        url: imageUrl,
+        productId: productId,
+      },
+    });
+
+    return {
+      statusCode: 200,
+      message: "Product images upload successfully!",
       url: imageUrl,
-      productId: productId,
-    },
-  });
-  return { message: "Product image uploaded" };
+    };
+  } catch (error) {
+    console.log("ERROR: ", error);
+    throw createError({
+      statusCode: 500,
+      message: "Something went wrong! Please try again.",
+    });
+  }
 });

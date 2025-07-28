@@ -4,7 +4,7 @@ import { ref, watchEffect } from "vue";
 import { useRouter } from "vue-router";
 import { useVuelidate } from "@vuelidate/core";
 import { required, email } from "@vuelidate/validators";
-import { showError } from "../../utils/toast-notification";
+import { errorMsg } from "../../utils/toast-notification";
 import handleApiError from "../../utils/handle-parse-error";
 import { useSignUpStore } from "../../stores/auth/signup-store";
 
@@ -55,7 +55,7 @@ async function submitSignUp() {
   } catch (error) {
     console.log("ERROR: ", error);
     const { message } = handleApiError(error);
-    showError(message);
+    errorMsg(message);
     isLoading.value = false;
   }
 }
@@ -69,7 +69,11 @@ async function submitSignUp() {
           <h1 class="text-2xl mb-3 text-center font-medium">Sign In</h1>
 
           <FormError :errors="validate.name.$errors">
-            <BaseInput v-model="registerInput.name" type="text" placeholder="User Name" />
+            <BaseInput
+              v-model="registerInput.name"
+              type="text"
+              placeholder="User Name"
+            />
           </FormError>
 
           <FormError :errors="validate.email.$errors">

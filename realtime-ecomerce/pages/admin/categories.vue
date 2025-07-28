@@ -7,9 +7,9 @@ import BaseButton from "../../components/base-components/BaseButton.vue";
 definePageMeta({
   layout: "admin",
 });
-const isShowModal = ref(false);
+const isShowCategoryModal = ref(false);
 function toggleShowCategoryModal() {
-  isShowModal.value = !isShowModal.value;
+  isShowCategoryModal.value = !isShowCategoryModal.value;
 }
 
 const categoryStore = useCategoryStore();
@@ -38,7 +38,7 @@ function editCategory(category) {
 
       <ClientOnly>
         <CategoryModal
-          :isShow="isShowModal"
+          :isShow="isShowCategoryModal"
           @refreshCategories="refreshCategories"
           @toggleCategoryModal="toggleShowCategoryModal"
         />

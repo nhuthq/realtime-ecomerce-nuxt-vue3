@@ -2,7 +2,7 @@
 import { storeToRefs } from "pinia";
 import { ref, watchEffect } from "vue";
 import { useHeaders } from "../../utils/http-headers";
-import { showError, successMsg } from "../../utils/toast-notification";
+import { errorMsg, successMsg } from "../../utils/toast-notification";
 import { useCategoryStore } from "../../stores/category/category-store";
 
 import handleApiError from "../../utils/handle-parse-error";
@@ -46,7 +46,7 @@ async function submitInput() {
   } catch (error) {
     console.log("ERROR: ", error);
     const { message } = handleApiError(error);
-    showError(message);
+    errorMsg(message);
     isLoading.value = false;
   }
 }

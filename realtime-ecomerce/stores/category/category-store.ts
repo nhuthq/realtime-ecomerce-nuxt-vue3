@@ -1,7 +1,7 @@
 import { ref } from "vue";
 import { defineStore } from "pinia";
 import { useHeaders } from "../../utils/http-headers";
-import { showError } from "../../utils/toast-notification";
+import { errorMsg } from "../../utils/toast-notification";
 
 import handleApiError from "../../utils/handle-parse-error";
 
@@ -32,7 +32,7 @@ export const useCategoryStore = defineStore("category-store", () => {
       error.value = error;
       console.error("FETCH CATEGORIES ERROR: ", error.value);
       const { message } = handleApiError(error.value);
-      showError(message);
+      errorMsg(message);
     } finally {
       pending.value = false;
     }

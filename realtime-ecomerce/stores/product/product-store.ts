@@ -1,10 +1,10 @@
 import { ref } from "vue";
-import { useFetch } from "nuxt/app";
 import { defineStore } from "pinia";
 import { useHeaders } from "../../utils/http-headers";
-import { showError } from "../../utils/toast-notification";
 
 import handleApiError from "../../utils/handle-parse-error";
+import { errorMsg } from "../../utils/toast-notification";
+
 
 export const useProductsStore = defineStore("products-store", () => {
   const headers = useHeaders();
@@ -25,8 +25,6 @@ export const useProductsStore = defineStore("products-store", () => {
   const productsData = ref([]);
 
   const uploadProductImages = ref([]);
-  const isShowUploadImageModal = ref(false);
-  const isShowUploadedImageModal = ref(false);
   const productColors = ref([
     "Red",
     "Black",
@@ -57,7 +55,7 @@ export const useProductsStore = defineStore("products-store", () => {
     } catch (error) {
       console.error("FETCH PRODUCTS ERROR: ", error);
       const { message } = handleApiError(error);
-      showError(message);
+      errorMsg(message)
     }
   }
 
@@ -82,7 +80,7 @@ export const useProductsStore = defineStore("products-store", () => {
         };
         resolve(requestOption);
 
-        const respones = await useFetch("/api/admin/product/upload-image", {
+        const respones = await $fetch("/api/admin/product/upload-image", {
           headers: {
             ...headers,
           },
@@ -94,18 +92,16 @@ export const useProductsStore = defineStore("products-store", () => {
   }
 
   return {
+    edit,
+    page,
+    limit,
+    search,
+    productId,
+    totalPages,
+    productsData,
     productInput,
     productColors,
     uploadProductImages,
-    isShowUploadImageModal,
-    isShowUploadedImageModal,
-    edit,
-    productId,
-    search,
-    page,
-    limit,
-    totalPages,
-    productsData,
     fetchProducts,
     changePage,
     uploadImagePayload,

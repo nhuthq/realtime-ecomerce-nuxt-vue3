@@ -4,7 +4,7 @@ import { useCookie } from "nuxt/app";
 import { useRouter } from "vue-router";
 import { useVuelidate } from "@vuelidate/core";
 import { required, email } from "@vuelidate/validators";
-import { showError } from "../../utils/toast-notification";
+import { errorMsg } from "../../utils/toast-notification";
 import handleApiError from "../../utils/handle-parse-error";
 
 definePageMeta({
@@ -67,7 +67,7 @@ async function submitSignIn() {
   } catch (error) {
     console.log("ERROR: ", error);
     const { message } = handleApiError(error);
-    showError(message);
+    errorMsg(message);
     isLoading.value = false;
   }
 }

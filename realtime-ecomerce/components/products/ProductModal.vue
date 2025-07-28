@@ -2,7 +2,7 @@
 import { storeToRefs } from "pinia";
 import { ref, watchEffect } from "vue";
 import { useHeaders } from "../../utils/http-headers";
-import { showError, successMsg } from "../../utils/toast-notification";
+import { errorMsg, successMsg } from "../../utils/toast-notification";
 import { useProductsStore } from "../../stores/product/product-store";
 
 import handleApiError from "../../utils/handle-parse-error";
@@ -40,8 +40,6 @@ async function submitInput() {
       headers: { ...headers },
     });
 
-    console.log("SUBMIT PRODUCT RESPONSE: ", response);
-
     if (response.statusCode === 200) {
       edit.value = false;
       productInput.value = {};
@@ -57,7 +55,7 @@ async function submitInput() {
   } catch (error) {
     console.log("ERROR: ", error);
     const { message } = handleApiError(error);
-    showError(message);
+    errorMsg(message);
     isLoading.value = false;
   }
 }
