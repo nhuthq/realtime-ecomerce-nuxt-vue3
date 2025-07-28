@@ -1,85 +1,85 @@
 <script setup>
-import { storeToRefs } from 'pinia';
-import { ref, watchEffect } from 'vue';
-import { useHeaders } from '../../utils/http-headers';
-import { showError, successMsg } from '../../utils/toast-notification';
-import { useCategoryStore } from '../../stores/category/category-store';
+import { storeToRefs } from "pinia";
+import { ref, watchEffect } from "vue";
+import { useHeaders } from "../../utils/http-headers";
+import { showError, successMsg } from "../../utils/toast-notification";
+import { useCategoryStore } from "../../stores/category/category-store";
 
-import handleApiError from '../../utils/handle-parse-error';
+import handleApiError from "../../utils/handle-parse-error";
 
-const headers = useHeaders()
+const headers = useHeaders();
 const isLoading = ref(false);
 const submitEnable = ref(false);
 const props = defineProps(["isShow"]);
 const emits = defineEmits(["toggleCategoryModal", "refreshCategories"]);
 
-const categoryStore = useCategoryStore()
-const { categoryInput, edit } = storeToRefs(categoryStore)
+const categoryStore = useCategoryStore();
+const { categoryInput, edit } = storeToRefs(categoryStore);
 
 watchEffect(() => {
-  submitEnable.value = categoryInput.value.name.trim().length > 0
+  submitEnable.value = categoryInput.value.name.trim().length > 0;
 });
 
 async function submitInput() {
   try {
     isLoading.value = true;
-    const categoryEndpoint = edit.value ? 
-    "/api/admin/category/update-category" :
-    "/api/admin/category/create-category"
+    const categoryEndpoint = edit.value
+      ? "/api/admin/category/update-category"
+      : "/api/admin/category/create-category";
 
     const response = await $fetch(categoryEndpoint, {
       method: "POST",
       body: JSON.stringify(categoryInput.value),
-      headers: {...headers}
-    })
+      headers: { ...headers },
+    });
 
-    console.log("response", response)
+    console.log("response", response);
 
     if (response.statusCode === 200) {
-      
       isLoading.value = false;
-      emits('refreshCategories')
+      emits("refreshCategories");
       setTimeout(() => {
-        emits('toggleCategoryModal')
+        emits("toggleCategoryModal");
       }, 500);
-      successMsg(response.message)
+      successMsg(response.message);
     }
-  } catch(error) {
-    console.log("ERROR: ", error)
+  } catch (error) {
+    console.log("ERROR: ", error);
     const { message } = handleApiError(error);
-    showError(message)
+    showError(message);
     isLoading.value = false;
   }
 }
-
 </script>
 
 <template>
   <BaseModal :isShow="isShow">
     <template #title>
-      <h1 class="text-2xl font-bold">{{ edit ? "Edit" : "Create" }} category</h1>
+      <h1 class="text-2xl font-bold">
+        {{ edit ? "Edit" : "Create" }} category
+      </h1>
     </template>
 
     <template #body>
       <BaseInput
-      v-model="categoryInput.name"
-      :type="'text'"
-      :placeholder="!edit ? '' : 'Category name'"
+        v-model="categoryInput.name"
+        :type="'text'"
+        :placeholder="!edit ? '' : 'Category name'"
       />
     </template>
 
     <template #footer>
       <BaseButton
-      label="Close"
-      class="bg-slate-400"
-      @click="emits('toggleCategoryModal')"
+        label="Close"
+        class="bg-slate-400"
+        @click="emits('toggleCategoryModal')"
       />
 
       <BaseButton
-      :label="edit ? 'Update' : 'Create'"
-      :isLoading="isLoading"
-      :disabled="!submitEnable"
-      @click="submitInput"
+        :label="edit ? 'Update' : 'Create'"
+        :isLoading="isLoading"
+        :disabled="!submitEnable"
+        @click="submitInput"
       />
     </template>
   </BaseModal>

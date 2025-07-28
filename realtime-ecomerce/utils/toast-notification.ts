@@ -1,28 +1,20 @@
-import { useToast } from 'vue-toast-notification';
-import 'vue-toast-notification/dist/theme-sugar.css';
+import { useToast } from "vue-toast-notification";
+import "vue-toast-notification/dist/theme-sugar.css";
 
-const toast = useToast()
+const toast = useToast();
 
-export function showError(message:string) {
+export function showError(message: string) {
   toast.error(message, {
-    position: 'bottom-right',
+    position: "bottom-right",
     duration: 4000,
-    dismissible: true
-  })
+    dismissible: true,
+  });
 }
 
-export function successMsg(message:string) {
+export function successMsg(message: string) {
   toast.success(message, {
-    position: 'bottom-right',
+    position: "bottom-right",
     duration: 4000,
-    dismissible: true
-  })
+    dismissible: true,
+  });
 }
-
-
-
-
-
-
-
-
