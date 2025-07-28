@@ -28,6 +28,7 @@
     "pinia": "^3.0.3",
     "react-use-cookie": "^1.6.1",
     "sass-embedded": "^1.89.2",
+    "slugify": "^1.6.6",
     "sweetalert": "^2.1.2",
     "sweetalert2": "^11.22.2",
     "tailwindcss": "^4.1.11",
