@@ -10,8 +10,8 @@ export default defineEventHandler(async (event) => {
 
         return { 
             statusCode: 200, 
-            message: 'Success!', 
-            data: categories
+            message: 'Category get successfully!', 
+            categories
         };
     } catch(error) {
         const errorMessage = 'Somethings went wrong. Please try again!'

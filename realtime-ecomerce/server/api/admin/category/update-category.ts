@@ -24,14 +24,13 @@ export default withAuth(async (event) => {
                 id:id
             },
             data: {
-                name:name,
-               
+                name:name,    
             }
         })
 
         return { 
             statusCode: 200, 
-            message: 'Success!', 
+            message: 'Category updated successfully!', 
             data
         };
     } catch(error) {

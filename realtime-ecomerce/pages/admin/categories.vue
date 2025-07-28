@@ -7,16 +7,19 @@ import BaseButton from '../../components/base-components/BaseButton.vue';
   definePageMeta({
       layout: 'admin'
   })
-
   const isShowModal = ref(false)
-
   function toggleShowCategoryModal() {
     isShowModal.value = !isShowModal.value
   }
 
   const categoryStore = useCategoryStore()
   const { categoryInput } = storeToRefs(categoryStore)
-  const { data, getCategories } = await categoryStore.fetchCategories()
+  await categoryStore.fetchCategories()
+
+  async function refreshCategories(category) {
+    await categoryStore.fetchCategories()
+  }
+
 
   function editCategory(category) {
     categoryInput.value = category
@@ -33,14 +36,14 @@ import BaseButton from '../../components/base-components/BaseButton.vue';
         <ClientOnly>
           <CategoryModal
           :isShow="isShowModal"
-          @refreshCategories="getCategories"
+          @refreshCategories="refreshCategories"
           @toggleCategoryModal="toggleShowCategoryModal"
           />
         </ClientOnly>
 
         <CategoryTable
-        :categories="data.data"
         @editCategory="editCategory"
+        :categories="categoryStore.categoriesData"
         />
       </div>
     </div>
