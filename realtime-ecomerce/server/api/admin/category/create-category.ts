@@ -35,7 +35,6 @@ export default withAuth(async (event) => {
         const category = await prisma.category.create({
             data: {
                 name:name,
-               
             }
         })
         return { 

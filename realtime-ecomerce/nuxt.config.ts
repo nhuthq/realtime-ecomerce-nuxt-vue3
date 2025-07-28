@@ -9,7 +9,8 @@ export default defineNuxtConfig({
     '@prisma/nuxt',
     '@pinia/nuxt',
     '@nuxt/image',
-    '@nuxt/icon'
+    '@nuxt/icon',
+    '@nuxt/ui'
   ],
   experimental: {
     componentIslands: true,

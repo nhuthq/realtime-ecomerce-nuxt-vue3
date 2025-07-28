@@ -25,8 +25,29 @@ model User {
 }
 
 model Category {
-  id   Int    @id @default(autoincrement())
-  name String @unique
+  id      Int       @id @default(autoincrement())
+  name    String    @unique
+  Product Product[]
 
   @@map("categories")
+}
+
+model Product {
+  id         Int      @id @default(autoincrement())
+  name       String
+  slug       String?
+  color      String
+  price      Decimal  @db.Decimal(10, 2)
+  categoryId Int
+  category   Category @relation(fields: [categoryId], references: [id])
+  images     Image[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Image {
+  id        Int     @id @default(autoincrement())
+  url       String
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
 }
