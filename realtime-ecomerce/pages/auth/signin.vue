@@ -4,12 +4,12 @@ import { useCookie } from "nuxt/app";
 import { useRouter } from "vue-router";
 import { useVuelidate } from "@vuelidate/core";
 import { required, email } from "@vuelidate/validators";
-import { showError } from "../../utils/toast-notification";
+import { errorMsg } from "../../utils/toast-notification";
 import handleApiError from "../../utils/handle-parse-error";
 
 definePageMeta({
-      layout: 'auth'
-  })
+  layout: "auth",
+});
 const loginInput = ref({
   email: "",
   password: "",
@@ -27,8 +27,9 @@ const validate = useVuelidate(rules, loginInput);
 const userCookie = useCookie("user", userCookieSettings);
 
 watchEffect(() => {
-  submitEnable.value = loginInput.value.email.trim().length > 0 && 
-  loginInput.value.password.trim().length > 0
+  submitEnable.value =
+    loginInput.value.email.trim().length > 0 &&
+    loginInput.value.password.trim().length > 0;
 });
 
 async function submitSignIn() {
@@ -46,11 +47,11 @@ async function submitSignIn() {
 
     if (response.statusCode === 200) {
       isLoading.value = false;
-      
+
       const userRole = response?.data?.user?.role;
-      userCookie.value = response; 
-      console.log("LOGIN RESPONSE: ", JSON.stringify(response))
-      
+      userCookie.value = response;
+      console.log("LOGIN RESPONSE: ", JSON.stringify(response));
+
       switch (userRole) {
         case "CUSTOMER":
           router.push("/");
@@ -64,52 +65,56 @@ async function submitSignIn() {
       }
     }
   } catch (error) {
-    console.log("ERROR: ", error)
+    console.log("ERROR: ", error);
     const { message } = handleApiError(error);
-    showError(message)
+    errorMsg(message);
     isLoading.value = false;
   }
 }
-  
 </script>
 
 <template>
-    <div class="bg-white h-screen ">
-      <div class="h-full w-full flex justify-center items-center">
-        <div class="w-[300px]">
-          <div class="flex flex-col gap-5">
-            <h1 class="text-2xl mb-3 text-center font-medium">Sign In</h1>
+  <div class="bg-white h-screen">
+    <div class="h-full w-full flex justify-center items-center">
+      <div class="w-[300px]">
+        <div class="flex flex-col gap-5">
+          <h1 class="text-2xl mb-3 text-center font-medium">Sign In</h1>
 
-            <FormError :errors="validate.email.$errors">
-              <BaseInput
-                v-model="loginInput.email"
-                type="email"
-                placeholder="Email"
-              />
-            </FormError>
+          <FormError :errors="validate.email.$errors">
+            <BaseInput
+              v-model="loginInput.email"
+              type="email"
+              placeholder="Email"
+            />
+          </FormError>
 
-            <FormError :errors="validate.password.$errors">
-              <BaseInput
-                v-model="loginInput.password"
-                :type="'password'"
-                :placeholder="'Password'"
-              />
-            </FormError>
+          <FormError :errors="validate.password.$errors">
+            <BaseInput
+              v-model="loginInput.password"
+              :type="'password'"
+              :placeholder="'Password'"
+            />
+          </FormError>
 
-            <BaseButton 
-            class="mt-5" 
+          <BaseButton
+            class="mt-5"
             label="Sign In"
-            @click="submitSignIn" 
+            @click="submitSignIn"
             :isLoading="isLoading"
-            :disabled="!submitEnable"/>
-            <p class="text-sm font-normal text-center text-gray-700 dark:text-gray-500 sm:text-start" >
-              Dont have an account ?
-              <NuxtLink to="/auth/signup" class="text-indigo-500 hover:text-brand-600 font-semibold">Sign Up</NuxtLink>
-            </p>
-          </div>
+            :disabled="!submitEnable"
+          />
+          <p
+            class="text-sm font-normal text-center text-gray-700 dark:text-gray-500 sm:text-start"
+          >
+            Dont have an account ?
+            <NuxtLink
+              to="/auth/signup"
+              class="text-indigo-500 hover:text-brand-600 font-semibold"
+              >Sign Up</NuxtLink
+            >
+          </p>
         </div>
       </div>
     </div>
+  </div>
 </template>
-  
-  

@@ -1,15 +1,15 @@
 import { createError, readBody } from "h3";
 import { PrismaClient } from "@prisma/client";
 import { withAuth } from "../../../../utils/with-auth";
-import { categorySchema } from "./modules/validate-category";
+import { deleteProductSchema } from "./modules/validate-product";
 
 const prisma = new PrismaClient();
 
 export default withAuth(async (event) => {
   const body = await readBody(event);
-  const { id, name } = body;
+  const { id } = body;
 
-  const results = categorySchema.safeParse({ id, name });
+  const results = deleteProductSchema.safeParse({ id });
 
   if (!results.success) {
     throw createError({
@@ -17,26 +17,21 @@ export default withAuth(async (event) => {
       message: "Validation Failed",
     });
   }
+
   try {
-    const data = await prisma.category.update({
-      where: {
-        id: id,
-      },
-      data: {
-        name: name,
-      },
+    await prisma.product.delete({
+      where: { id },
     });
 
     return {
       statusCode: 200,
-      message: "Category updated successfully!",
-      data,
+      message: "Product deleted successfully!",
     };
   } catch (error) {
-    const errorMessage = "Somethings went wrong. Please try again!";
+    console.error("ERROR: ", error);
     throw createError({
       statusCode: 500,
-      message: errorMessage,
+      message: "Something went wrong! Please try again.",
     });
   }
 });

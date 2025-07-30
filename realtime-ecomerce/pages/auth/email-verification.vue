@@ -4,7 +4,7 @@ import { ref } from "vue";
 import { storeToRefs } from "pinia";
 import { useRoute } from "vue-router";
 import { useSignUpStore } from "../../stores/auth/signup-store";
-import { showError, successMsg } from "../../utils/toast-notification";
+import { errorMsg, successMsg } from "../../utils/toast-notification";
 import handleApiError from "../../utils/handle-parse-error";
 
 const otpInput = ref<InstanceType<typeof VOtpInput> | null>(null);
@@ -16,18 +16,17 @@ const submitEnable = ref(false);
 const signUpStore = useSignUpStore();
 const { registerInput } = storeToRefs(signUpStore);
 
-function handleOnComplete (value: string) {
+function handleOnComplete(value: string) {
   registerInput.value.otpCode = value;
   console.log("OTP completed: ", value);
-};
+}
 
-function handleOnChange (value: string) {
+function handleOnChange(value: string) {
   console.log("OTP changed: ", value);
   submitEnable.value = value.length === 6;
-};
+}
 
 async function verifyEmail() {
-
   isLoading.value = true;
   try {
     const response = await $fetch("/api/auth/email-verification", {
@@ -39,13 +38,13 @@ async function verifyEmail() {
       isLoading.value = false;
       successMsg(response.message);
       setTimeout(() => {
-        window.location.href='/auth/signin'
+        window.location.href = "/auth/signin";
       }, 1000);
     }
   } catch (error) {
-    console.log("ERROR: ", error)
+    console.log("ERROR: ", error);
     const { message } = handleApiError(error);
-    showError(message)
+    errorMsg(message);
     isLoading.value = false;
   }
 }
@@ -56,7 +55,9 @@ async function verifyEmail() {
     <div class="bg-white h-screen">
       <div class="h-full w-full flex justify-center items-center">
         <div class="flex flex-col gap-5">
-          <h1 class="text-2xl mb-3 text-center font-medium">E-mail verification</h1>
+          <h1 class="text-2xl mb-3 text-center font-medium">
+            E-mail verification
+          </h1>
           <v-otp-input
             ref="otpInput"
             input-classes="otp-input"

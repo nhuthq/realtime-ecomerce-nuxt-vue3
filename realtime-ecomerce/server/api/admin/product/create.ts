@@ -1,15 +1,15 @@
 import { createError, readBody } from "h3";
 import { PrismaClient } from "@prisma/client";
 import { withAuth } from "../../../../utils/with-auth";
-import { categorySchema } from "./modules/validate-category";
+import { productScheme } from "./modules/validate-product";
 
 const prisma = new PrismaClient();
 
 export default withAuth(async (event) => {
   const body = await readBody(event);
-  const { id, name } = body;
+  const { name, color, price, categoryId } = body;
 
-  const results = categorySchema.safeParse({ id, name });
+  const results = productScheme.safeParse({ name, color, price, categoryId });
 
   if (!results.success) {
     throw createError({
@@ -17,26 +17,29 @@ export default withAuth(async (event) => {
       message: "Validation Failed",
     });
   }
+
+  console.log("BODY: ", JSON.stringify(body));
+
   try {
-    const data = await prisma.category.update({
-      where: {
-        id: id,
-      },
+    const product = await prisma.product.create({
       data: {
         name: name,
+        color: color,
+        price: price,
+        categoryId: categoryId,
       },
     });
 
     return {
       statusCode: 200,
-      message: "Category updated successfully!",
-      data,
+      message: "Product created successfully!",
+      product,
     };
   } catch (error) {
-    const errorMessage = "Somethings went wrong. Please try again!";
+    console.log("ERROR: ", error);
     throw createError({
       statusCode: 500,
-      message: errorMessage,
+      message: "Something went wrong! Please try again.",
     });
   }
 });
